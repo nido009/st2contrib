@@ -118,7 +118,7 @@ class IMAPSensor(PollingSensor):
         message = mailbox.mail(uid, include_raw=True)
         mime_msg = mime.from_string(message.raw)
 
-        body = message.body
+        #body = mime_msg.body
         sent_from = message.from_addr
         sent_to = message.to
         subject = message.title
@@ -126,6 +126,15 @@ class IMAPSensor(PollingSensor):
         message_id = message.message_id
         headers = mime_msg.headers.items()
         has_attachments = bool(message.attachments)
+        
+        if (mime_msg.content_type.is_multipart()):
+            #received a multipart message
+            body_parts = []
+            for part in mime_msg.parts:
+                body_parts.append(part.body)
+            body = body_parts
+        else:
+            body = mime_msg.body
 
         payload = {
             'uid': uid,
