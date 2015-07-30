@@ -133,6 +133,9 @@ class IMAPSensor(PollingSensor):
             body = body_parts
         else:
             body = mime_msg.body
+        
+        # Flatten the headers so they can be unpickled
+        headers = [list(header) for header in headers]
 
         payload = {
             'uid': uid,
